@@ -22,7 +22,6 @@ circle {
 text {
   font: 10px sans-serif;
   pointer-events: none;
-  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
 }
 
 #hexgon-0 {
@@ -126,6 +125,7 @@ circle:first-child {
 										.attr("r", 50);
 			
 
+
 			for (var i = 0; i < force.nodes().length; i++) { 
 			    hexgon(i);
 			}
@@ -136,10 +136,32 @@ circle:first-child {
 
 			}
 
+			var text = svg.append("svg:g").selectAll("text")
+			         .data(force.nodes())
+			         .enter().append("text");
+
+			text
+			    .attr("text-anchor", "middle")
+			    .text(function(d, i) { return "ab de villiars " + i })
+			    .attr("fill", "black");
+
+
+
+			var img = svg.append("g").selectAll("image")
+					.data(force.nodes())
+					.enter()
+					.append("image")
+			    .attr("xlink:href", "http://www4.pictures.gi.zimbio.com/Australia+South+African+Nets+Session+Press+8tEdt7zaQcql.jpg")
+			    .attr("width", 25)
+			    .attr("height", 25)
+
 
 			function tick() {
 				path.attr("d", func);
 				circle.attr("transform", transform);
+				text.attr("transform",  transform);
+				img.attr("x", (transform_image_x));
+				img.attr("y", transform_image_y);
 			}
 
 			function func (d) {
@@ -153,6 +175,13 @@ circle:first-child {
 				return "translate(" + d.x + "," + d.y + ")";
 			}
 
+			function transform_image_x(d,i) {
+				return d.x - 30;
+			}
+			function transform_image_y(d,i) {
+				return d.y + 15;
+			}
+
 			function hexgon(index) {
         var _s32 = (Math.sqrt(3)/2);
         var A = 50;
@@ -160,7 +189,7 @@ circle:first-child {
         var yDiff = 0;
         var pointData = [[A+xDiff, 0+yDiff], [A/2+xDiff, A*_s32+yDiff], [-A/2+xDiff, A*_s32+yDiff], [-A+xDiff, 0+yDiff],
         [-A/2+xDiff, -A*_s32+yDiff], [A/2+xDiff, -A*_s32+yDiff]];
-        console.log(d3.svg.line(), "sss")
+
         svg.append("g").selectAll("path.area") //draw elements
                 .data([pointData]).enter().append("path")
                 .attr("class", "area")
@@ -168,7 +197,12 @@ circle:first-child {
                 .attr("id", "hexgon-"+index)
                 .attr("stroke", "#fff")
                 .attr("stroke-width", 3)
-                .attr("d", d3.svg.line());
+                .attr("d", d3.svg.line())
+
+                ;
+
+
+                
 			}
 			
 
