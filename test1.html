@@ -104,7 +104,7 @@ circle:first-child {
 				.size([w, h])
     			.nodes(d3.values(nodes))
 			    .links(links)
-			    .linkDistance(w/4)
+			    .linkDistance(w/5)
 			    .on("tick", tick)
               .charge(function(d, i) { return i==0 ? -20000 : -500; })
               .friction(0.9)
