@@ -1,0 +1,191 @@
+<style type="text/css">
+	#chart svg{
+	  padding-top: 30px;
+	}
+
+	#chart text{
+	  fill: black;
+	  font: 10px sans-serif;
+	  text-anchor: end; 
+	}
+
+	.axis text{
+	  font: 10px sans-serif;
+	}
+
+	.axis path, .axis line{
+	  fill: none;
+	  stroke : black;
+	  shape-rendering: crispEdges;
+	}
+
+	.attempt-histroy.correct {
+		fill: #95d5a1 !important;
+	}
+	.attempt-histroy.incorrect {
+		fill: #d59796 !important;
+	}
+	.attempt-histroy.correct-with-hints {
+		fill: #ffd49a !important;
+	}
+	.attempt-histroy.skipped {
+		fill: #f0ebeb !important;
+	}
+
+	.outer {
+	    width: 100%;
+	    height: auto;
+	    overflow: auto;
+	}
+	.inner {
+	    width: 100%;
+	    height:auto;
+	}
+	#chart {
+	    display: block;
+	    width: 100%;
+	    height: 100%;
+	}
+</style>
+<h2>Ab De Villiars</h2>
+<div class="outer">
+  <div class="inner"> 
+    <div class="span4" id="chart">
+		</div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+
+<script type="text/javascript">
+	var margin ={top:20, right:30, bottom:30, left:85},
+	    width=500-margin.left - margin.right, 
+	    height=400-margin.top-margin.bottom;
+
+	// scale to ordinal because x axis is not numerical
+	var x = d3.scale.ordinal().rangeRoundBands([1, width], .1);
+
+	//scale to numerical value by height
+	var y = d3.scale.linear().range([height, 0]);
+
+	var chart = d3.select("#chart")  
+	              .append("svg")  //append svg element inside #chart
+	              .attr("width", width+(2*margin.left)+margin.right)    //set width
+	              .attr("height", height+margin.top+margin.bottom);  //set height
+	var xAxis = d3.svg.axis()
+	              .scale(x)
+	              .ticks(30)
+						    
+						    .outerTickSize([4])
+
+	              .orient("bottom");  //orient bottom because x-axis will appear below the bars
+
+	var yAxis = d3.svg.axis()
+	              .scale(y)
+	              .ticks(12)
+	              .orient("left");
+
+	d3.json("histroy.json", function(error, data){
+		data = addCountToData(data);
+		
+	  x.domain(data.map(function(d){ return d.counter;}));
+	  y.domain([0, 12]);
+	  
+
+	  var bar = chart.selectAll("g")
+	                    .data(data)
+	                  .enter()
+	                    .append("g")
+	                    .attr("transform", function(d, i){
+	                      return "translate("+x(d.counter)+", 0)";
+	                    });
+	  
+	  bar.append("rect")
+	      .attr("y", function(d) { 
+	        return y(d.blended_difficulty) + 10; 
+	      })
+	      .attr("x", function(d,i){
+	        return x.rangeBand() + 25;
+	      })
+	      .attr("height", function(d) { 
+	        return (height - y(d.blended_difficulty)) - 10; 
+	      })
+	      .attr("width", 10)  //set width base on range on ordinal data
+	      .attr("class", function(d) { 
+	        return "attempt-histroy " + to_params(d.attempt_type) ; 
+	      }); 
+
+	  bar.append("svg:image")
+	      .attr("x", x.rangeBand()+margin.left - 42 )
+	      .attr("y", function(d) { return y(d.blended_difficulty) - 2; })
+ 				.attr("width", 10)
+    		.attr("height", 10)
+    		.attr("xlink:href", function(d) { return d.image_url; });
+	  
+	  chart.append("g")
+	        .attr("class", "x axis")
+	        .attr("transform", "translate("+margin.left+","+ height +")")        
+	        .call(xAxis);
+	  
+	  chart.append("g")
+	        .attr("class", "y axis")
+	        .attr("transform", "translate("+margin.left+",10)")
+	        .call(yAxis)
+
+
+		var circle_legend_position = [200, 275, 350, 475];
+		var text_legend_position   = [250, 330, 450, 525];
+	        
+		var legends_icon = chart.append("g")
+										    .attr("class", "legends")
+										    .attr("transform", "translate(160,-80)")
+												.selectAll('circle')
+												.data(legends())
+												.enter();
+		
+		
+		legends_icon.append('circle')
+		.attr("cx", function(d, i) { return circle_legend_position[i]; })
+		.attr("cy", 60)
+		.attr("r", 6)
+    .attr("class", function(d) { 
+      return "attempt-histroy " + to_params(d); 
+    }); 
+
+    
+    legends_icon.append("text")
+    	.text(function(d) {return d;})
+	    .attr("class", function(d) { 
+	      return "attempt-histroy " + to_params(d); 
+	    })
+
+    	.attr("transform", function(d,i) { return "translate("+ text_legend_position[i] +",63)"; });
+
+	});
+
+	function type(d) {
+			console.log("")
+	    d.letter = +d.letter; // coerce to number
+	    return d;
+	}
+
+	function to_params(p) {
+		var params = p.split(" ");
+		return params.join("-").toLocaleLowerCase();
+	}
+
+	function legends() {
+		return ["Correct", "Incorrect", "Correct with Hints", "Skipped"]
+	}
+
+	function addCountToData(data) {
+		var data_counter = 1;
+		for(var i in data) {
+			console.log(data[i])
+			data[i]["counter"] = data_counter++;
+		}
+		return data;
+	}
+</script>
+
+

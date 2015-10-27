@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 Test</title>
+        <script src="d3.js"></script>
+        <style>
+#arrow {
+  fill: green;
+}
+
+.arrow {
+  stroke: green;
+}
+
+circle {
+  fill: #ccc;
+  stroke: #ffffff;
+  stroke-width: 1.5px;
+}
+
+text {
+  font: 10px sans-serif;
+  pointer-events: none;
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+}
+
+#hexgon-0 {
+	visibility: hidden;
+}
+
+circle {
+	visibility: hidden;
+}
+
+circle:first-child {
+	visibility: visible;
+}
+
+.hex {
+  position: relative;
+  margin: 1em auto;
+  width: 10em; height: 17.32em;
+  border-radius: 1em/.5em;
+  background: orange;
+  transition: opacity .5s;
+}
+.hex:before, .hex:after {
+  position: absolute;
+  width: inherit; height: inherit;
+  border-radius: inherit;
+  background: inherit;
+  content: '';
+}
+.hex:before {
+    -webkit-transform: rotate(60deg);
+  transform: rotate(60deg);
+}
+.hex:after {
+    -webkit-transform: rotate(-60deg);
+  transform: rotate(-60deg);
+}
+
+</style>
+    </head>
+    <body>
+        <script type="text/javascript">
+        	var h = 700;
+        	var w = 1000;
+        	var svg = d3.select("body").append("svg").attr("width" , w).attr("height", h).append("g");
+        	var links = [
+							{source: "parent", target: "child 1"},
+							{source: "parent", target: "child 2"},
+							{source: "child 3", target: "parent"},
+							{source: "child 4", target: "parent"},
+							{source: "child 5", target: "parent"},
+							{source: "child 6", target: "parent"},
+							{source: "child 7", target: "parent"},
+							{source: "child 8", target: "parent"},
+							{source: "child 9", target: "parent"},
+
+  						];
+
+  			var nodes = {};
+			links.forEach(function(link) {
+				link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
+				link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
+			});
+
+			svg.append("defs").selectAll("marker")
+								.data(["arrow"])
+								.enter().append("marker")
+								.attr("id", function(d) { return d; })
+								.attr("viewBox", "0 -5 10 10")
+								.attr("refX", 90)
+								.attr("refY", 0)
+								.attr("markerWidth", 6)
+								.attr("markerHeight", 6)
+								.attr("orient", "auto")
+								.append("path")
+								.attr("d", "M0,-5L10,0L0,5");
+			
+			var force = d3.layout.force()
+				.size([w, h])
+    			.nodes(d3.values(nodes))
+			    .links(links)
+			    .linkDistance(w/4)
+			    .on("tick", tick)
+              .charge(function(d, i) { return i==0 ? -20000 : -500; })
+              .friction(0.9)
+
+              .gravity(0.3)
+			    .start();
+			var path = svg.append("g").selectAll("path")
+										.data(force.links())
+										.enter().append("path")
+										.attr("class", "arrow")
+										.attr("marker-end", "url(#arrow)");
+			//var 							
+			var circle = svg.append("g").selectAll("path")
+										.data(force.nodes())
+										.enter()
+										.append("circle")
+										.attr("id", function(d,i) {return "circle-"+i;})
+										.attr("class", function(d,i) {return "circle-"+i;})
+										.attr("r", 50);
+			
+
+			for (var i = 0; i < force.nodes().length; i++) { 
+			    hexgon(i);
+			}
+
+			for (var i = 0; i < force.nodes().length; i++) { 
+			   var joining_lines = d3.select("#hexgon-"+i).attr("d");
+			   d3.select("#hexgon-"+i).attr("d", joining_lines + " Z")
+
+			}
+
+
+			function tick() {
+				path.attr("d", func);
+				circle.attr("transform", transform);
+			}
+
+			function func (d) {
+				var dx = d.target.x ;
+				var dy = d.target.y ;
+				return "M" + d.source.x + "," + d.source.y + "L" + dx + "," + dy;
+			}
+
+			function transform(d,i) {
+				d3.select("#hexgon-"+i).attr("transform", "translate(" + d.x + "," + d.y + ")");
+				return "translate(" + d.x + "," + d.y + ")";
+			}
+
+			function hexgon(index) {
+        var _s32 = (Math.sqrt(3)/2);
+        var A = 50;
+        var xDiff = 0;
+        var yDiff = 0;
+        var pointData = [[A+xDiff, 0+yDiff], [A/2+xDiff, A*_s32+yDiff], [-A/2+xDiff, A*_s32+yDiff], [-A+xDiff, 0+yDiff],
+        [-A/2+xDiff, -A*_s32+yDiff], [A/2+xDiff, -A*_s32+yDiff]];
+        console.log(d3.svg.line(), "sss")
+        svg.append("g").selectAll("path.area") //draw elements
+                .data([pointData]).enter().append("path")
+                .attr("class", "area")
+                .style("fill", "#ff0000")
+                .attr("id", "hexgon-"+index)
+                .attr("stroke", "#fff")
+                .attr("stroke-width", 3)
+                .attr("d", d3.svg.line());
+			}
+			
+
+        </script>
+    </body>
+</html>

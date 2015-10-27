@@ -1,0 +1,33 @@
+[
+    {
+        "id": 748,
+        "session_id": 492,
+        "blended_difficulty": 5,
+        "correctness": -1,
+        "badge": "wasted-attempt",
+        "hints_used": 0,
+        "attempt_type": "Incorrect",
+        "image_url": "http://localhost:3000/assets/theme_phoenix/wasted@2x.png"
+    },
+    {
+        "id": 754,
+        "session_id": 492,
+        "blended_difficulty": 5,
+        "correctness": 1,
+        "badge": "overtime-attempt",
+        "hints_used": 1,
+        "attempt_type": "Correct with Hints",
+        "image_url": "http://localhost:3000/assets/theme_phoenix/Overtime_2x.png"
+    },
+    {
+        "id": 812,
+        "session_id": 541,
+        "blended_difficulty": 1,
+        "correctness": 1,
+        "badge": "perfect-attempt",
+        "hints_used": 0,
+        "attempt_type": "Correct",
+        "image_url": "http://localhost:3000/assets/theme_phoenix/Perfect_Attempt@2x.png"
+    }
+
+]
