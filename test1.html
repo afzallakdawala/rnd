@@ -33,6 +33,9 @@
       circle:first-child {
       visibility: visible;
       }
+      #label-0{
+      	visibility: hidden;
+      }
     </style>
   </head>
   <body>
@@ -41,6 +44,7 @@
       var w = 1000;
       var svg = d3.select("body").append("svg").attr("width" , w).attr("height", h).append("g");
       var links = [
+
       {source: "Concentration Terms and Concentration Solutions", target: "Percentage of Strength", important: true, label: "Diagram", color: "#9996d5"},
       {source: "Concentration Terms and Concentration Solutions", target: "Stoichiometry", important: false, label: "Identity", color: "#9996d5"},
       {source: "Concentration Terms and Concentration Solutions", target: "Stoichiometry 1", important: false, label: "Identity", color: "#9996d5"},
