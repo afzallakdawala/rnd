@@ -5,15 +5,17 @@
   <meta charset="utf-8">
   <title>D3 Test</title>
   <script src="d3.js"></script>
+  <script src="hexbin.js"></script>
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="bootstrap.min.css">
   <style>
     #arrow {
-      fill: green;
+      fill: #b9b9b9;
     }
     
     .arrow {
-      stroke: green;
+      stroke: #b9b9b9;
+      stroke-width: 2px;
     }
         
     text {
@@ -63,9 +65,24 @@
 
 <body>
   <script type="text/javascript">
+
+
     var h = 700;
     var w = 1000;
+
+var hexbin = d3.hexbin()
+    .size([w, h])
+    .radius(20);
+
+
     var svg = d3.select("body").append("svg").attr("width", w).attr("height", h).append("g");
+var hexagon = svg.append("g")
+    .attr("class", "hexagons")
+    .append("path")
+    .attr("d", hexbin.hexagon(19.5))
+    .attr("transform", function(d) { return "translate(" + 100 + "," + 100+ ")"; })
+    .style("fill", function(d) { return "orange"; });
+    
     var links = [{
       source: "Concentration Terms and Concentration Solutions",
       target: "Percentage of Strength",
@@ -196,13 +213,13 @@
     function appendMarker() {
       svg.append("defs").selectAll("marker").data(["arrow"]).enter().append("marker").attr("id", function(d) {
         return d;
-      }).attr("viewBox", "0 -5 10 10").attr("refX", 44).attr("refY", 0).attr("markerWidth", 20).attr("markerHeight", 20).attr("orient", "auto").append("path").attr("d", "M0,-5L10,0L0,5");
+      }).attr("viewBox", "0 -5 10 10").attr("refX", 66).attr("refY", 0).attr("markerWidth", 6).attr("markerHeight", 6).attr("orient", "auto").append("path").attr("d", "M0,-5L10,0L0,5");
     }
 
     function forceLayout() {
       return d3.layout.force().size([w, h]).nodes(d3.values(nodes)).links(links).linkDistance(w / 6).on("tick", tick).charge(function(d, i) {
         return i == 0 ? -20000 : -500;
-      }).friction(0.9).gravity(0.2).start();
+      }).friction(0.7).gravity(0.2).start();
     }
 
     function drawPath() {
