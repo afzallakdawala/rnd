@@ -41,16 +41,12 @@
       var w = 1000;
       var svg = d3.select("body").append("svg").attr("width" , w).attr("height", h).append("g");
       var links = [
-      {source: "parent", target: "child 1", important: true, label: "hello world"},
-      {source: "parent", target: "child 2", important: false, label: "hello world"},
-      {source: "child 3", target: "parent", important: true, label: "hello world"},
-      {source: "child 4", target: "parent", important: false, label: "hello world"},
-      {source: "child 5", target: "parent", important: true, label: "hello world"},
-      {source: "child 6", target: "parent", important: false, label: "hello world"},
-      {source: "child 7", target: "parent", important: true, label: "hello world"},
-      {source: "child 8", target: "parent", important: false, label: "hello world"},
-      {source: "child 9", target: "parent", important: true, label: "hello world"},
-      ];
+      {source: "Concentration Terms and Concentration Solutions", target: "Percentage of Strength", important: true, label: "Diagram", color: "#9996d5"},
+      {source: "Concentration Terms and Concentration Solutions", target: "Stoichiometry", important: false, label: "Identity", color: "#9996d5"},
+      {source: "Concentration Terms and Concentration Solutions", target: "Stoichiometry 1", important: false, label: "Identity", color: "#9996d5"},
+      {source: "Stoichiometry 2", target: "Concentration Terms and Concentration Solutions", important: false, label: "Identity", color: "#9996d5"},
+      {source: "Molarity", target: "Concentration Terms and Concentration Solutions", important: true, label: "Defination", color: "#e088c5"},
+        ];
       
       var nodes = getNodesData();
       appendMarker();

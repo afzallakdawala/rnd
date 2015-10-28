@@ -1,0 +1,63 @@
+<svg
+ xmlns="http://www.w3.org/2000/svg"
+ xmlns:svg="http://www.w3.org/2000/svg"
+ xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+ xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+ version="1.1"
+
+ width="800"
+ height="600"
+ id="example_text">
+
+    <g id="layer1">
+
+        <text
+         x="123.4"
+         y="567.8"
+         id="text_holder">
+
+            <tspan id="tspan1">Text</tspan>
+            <tspan id="tspan2">More text</tspan>
+
+        </text>
+    </g>
+    <script type="text/ecmascript">
+
+function create_from_rect (client_rect, offset_px) {
+    if (! offset_px) {offset_px=0;}
+    var box = document.createElementNS(
+        document.rootElement.namespaceURI,
+        'rect'
+    );
+
+    if (client_rect) {
+        box.setAttribute('x', client_rect.left - offset_px);
+        box.setAttribute('y', client_rect.top - offset_px);
+        box.setAttribute('width', client_rect.width + offset_px * 2);
+        box.setAttribute('height', client_rect.height + offset_px * 2);
+    }
+
+    return box;
+}
+
+function add_bounding_box (text_id, padding) {
+    var text_elem = document.getElementById(text_id);
+    if (text_elem) {
+        var f = text_elem.getClientRects();
+        if (f) {
+            var bbox = create_from_rect(f[0], padding);
+            bbox.setAttribute(
+                'style',
+                'fill: none;'+
+                'stroke: black;'+
+                'stroke-width: 0.5px;'
+            );
+            text_elem.parentNode.appendChild(bbox);
+        }
+    }
+}
+
+add_bounding_box('text_holder', 5);
+
+</script>
+</svg>
