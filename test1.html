@@ -72,17 +72,12 @@
 
 var hexbin = d3.hexbin()
     .size([w, h])
-    .radius(20);
+    .radius(60);
 
 
     var svg = d3.select("body").append("svg").attr("width", w).attr("height", h).append("g");
-var hexagon = svg.append("g")
-    .attr("class", "hexagons")
-    .append("path")
-    .attr("d", hexbin.hexagon(19.5))
-    .attr("transform", function(d) { return "translate(" + 100 + "," + 100+ ")"; })
-    .style("fill", function(d) { return "orange"; });
-    
+
+
     var links = [{
       source: "Concentration Terms and Concentration Solutions",
       target: "Percentage of Strength",
@@ -142,22 +137,24 @@ var hexagon = svg.append("g")
     }
 
     function transform(d, i) {
-      d3.select("#hexgon-" + i).attr("transform", "translate(" + d.x + "," + d.y + ")");
-      d3.select("#label-" + i).attr({
-        x: d.x - 30,
-        y: d.y - 37
-      });
       var pos = {x: d.x - 50,y: d.y - 10}
       if (i <= 0) {
         pos = {x: d.x - 50,y: d.y - 35}
       }
+
+      d3.select("#hexgon-" + i).attr("transform", "translate(" + d.x + "," + d.y + ")");
+      d3.select("#label-" + i).attr({
+        x: d.x - 50,
+        y: d.y - 37
+      });
       d3.select("#text-" + i).attr(pos);
 
       return "translate(" + d.x + "," + d.y + ")";
     }
 
     function transform_important(d, i) {
-      var posY = d.y + 40;
+      var posY = d.y + 56;
+      if (i == 0)  posY = d.y + 60;
       return "translate(" + d.x + "," + posY + ")";
     }
 
@@ -175,20 +172,11 @@ var hexagon = svg.append("g")
     }
 
     function hexgon(index) {
-      var _s32 = (Math.sqrt(3) / 2);
-      var A = 55;
-      var xDiff = 0;
-      var yDiff = 0;
-      var pointData = [
-        [A + xDiff, 0 + yDiff],
-        [A / 2 + xDiff, A * _s32 + yDiff],
-        [-A / 2 + xDiff, A * _s32 + yDiff],
-        [-A + xDiff, 0 + yDiff],
-        [-A / 2 + xDiff, -A * _s32 + yDiff],
-        [A / 2 + xDiff, -A * _s32 + yDiff]
-      ];
-      svg.append("g").selectAll("path.area") //draw elements
-        .data([pointData]).enter().append("path").attr("class", "area").style("fill", force.nodes()[index].color).attr("id", "hexgon-" + index).attr("d", d3.svg.line());
+        svg.append("g")
+        .attr("class", "hexagons")
+        .append("path")
+        .attr("d", hexbin.hexagon(65))
+        .attr("class", "area").style("fill", force.nodes()[index].color).attr("id", "hexgon-" + index);
     }
 
     function getNodesData() {
@@ -245,10 +233,10 @@ var hexagon = svg.append("g")
     function drawHexagon() {
       for (var i = 0; i < force.nodes().length; i++) {
         hexgon(i);
-        var joining_lines = d3.select("#hexgon-" + i).attr("d");
-        d3.select("#hexgon-" + i).attr("d", joining_lines + " Z")
-        svg.append("g").append('svg:foreignObject').attr("id", "label-" + i).attr("width", 100).attr("height", 100).html('<span class="label label-text">' + force.nodes()[i].label + '</span>');
-        svg.append("g").append('svg:foreignObject').attr("id", "text-" + i).attr("width", 100).attr("height", 100).html('<div class="display-name">' + force.nodes()[i].name + '</span>');
+        
+        svg.append("g").append('svg:foreignObject').attr("id", "label-" + i).attr("width", 100).attr("height", 100).html('<div class="label-text display-name">' + force.nodes()[i].label + '</div>');
+
+        svg.append("g").append('svg:foreignObject').attr("id", "text-" + i).attr("width", 100).attr("height", 100).html('<div class="display-name">' + force.nodes()[i].name + '</div>');
 
       }
     }
