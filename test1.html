@@ -1,229 +1,226 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>D3 Test</title>
-    <script src="d3.js"></script>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
 
-    <style>
-
-      #arrow {
+<head>
+  <meta charset="utf-8">
+  <title>D3 Test</title>
+  <script src="d3.js"></script>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+  <style>
+    #arrow {
       fill: green;
-      }
-      .arrow {
+    }
+    
+    .arrow {
       stroke: green;
-      }
-      circle {
+    }
+    
+    circle {
       fill: #ccc;
       stroke: #ffffff;
       stroke-width: 1.5px;
-      }
-      text {
+    }
+    
+    text {
       font: 10px sans-serif;
       pointer-events: none;
-      }
-      #hexgon-0 {
+    }
+    
+    #hexgon-0 {
       visibility: hidden;
-      }
-      circle {
+    }
+    
+    circle {
       visibility: hidden;
-      }
-      circle:first-child {
+    }
+    
+    circle:first-child {
       visibility: visible;
-      }
-      #label-0{
-      	visibility: hidden;
-      }
-    </style>
-  </head>
-  <body>
-    <script type="text/javascript">
-      var h = 700;
-      var w = 1000;
-      var svg = d3.select("body").append("svg").attr("width" , w).attr("height", h).append("g");
-      var links = [
+    }
+    
+    #label-0 {
+      visibility: hidden;
+    }
+  </style>
+</head>
 
-      {source: "Concentration Terms and Concentration Solutions", target: "Percentage of Strength", important: true, label: "Diagram", color: "#9996d5"},
-      {source: "Concentration Terms and Concentration Solutions", target: "Stoichiometry", important: false, label: "Identity", color: "#9996d5"},
-      {source: "Concentration Terms and Concentration Solutions", target: "Stoichiometry 1", important: false, label: "Identity", color: "#9996d5"},
-      {source: "Stoichiometry 2", target: "Concentration Terms and Concentration Solutions", important: false, label: "Identity", color: "#9996d5"},
-      {source: "Molarity", target: "Concentration Terms and Concentration Solutions", important: true, label: "Defination", color: "#e088c5"},
-        ];
-      
-      var nodes = getNodesData();
-      appendMarker();
-      var force  = forceLayout();
-      var path   = drawPath();
-      var circle = drawCircle();
-      drawHexagon();
-      var text   = addText();
-      var img    = addImage();
-      var important   = addImportant();
+<body>
+  <script type="text/javascript">
+    var h = 700;
+    var w = 1000;
+    var svg = d3.select("body").append("svg").attr("width", w).attr("height", h).append("g");
+    var links = [{
+      source: "Concentration Terms and Concentration Solutions",
+      target: "Percentage of Strength",
+      important: true,
+      label: "Diagram",
+      color: "#9996d5"
+    }, {
+      source: "Concentration Terms and Concentration Solutions",
+      target: "Stoichiometry",
+      important: false,
+      label: "Identity",
+      color: "#9996d5"
+    }, {
+      source: "Concentration Terms and Concentration Solutions",
+      target: "Stoichiometry 1",
+      important: false,
+      label: "Identity",
+      color: "#9996d5"
+    }, {
+      source: "Stoichiometry 2",
+      target: "Concentration Terms and Concentration Solutions",
+      important: false,
+      label: "Identity",
+      color: "#9996d5"
+    }, {
+      source: "Molarity",
+      target: "Concentration Terms and Concentration Solutions",
+      important: true,
+      label: "Defination",
+      color: "#e088c5"
+    }, ];
+    var nodes = getNodesData();
+    appendMarker();
+    var force = forceLayout();
+    var path = drawPath();
+    var circle = drawCircle();
+    drawHexagon();
+    var text = addText();
+    var img = addImage();
+    var important = addImportant();
 
+    function tick() {
+      path.attr("d", func);
+      circle.attr("transform", transform);
+      text.attr("transform", transform);
+      img.attr("x", (transform_image_x));
+      img.attr("y", transform_image_y);
+      important.attr("transform", transform_important);
+      //labels.attr("transform" , transform_lables);
+    }
 
-      function tick() {
-	      path.attr("d", func);
-	      circle.attr("transform", transform);
-	      text.attr("transform",  transform);
-	      img.attr("x", (transform_image_x));
-	      img.attr("y", transform_image_y);
-	      important.attr("transform",  transform_important);
-	      //labels.attr("transform" , transform_lables);
-      }
-      
-      function func (d) {
-	      var dx = d.target.x ;
-	      var dy = d.target.y ;
-	      return "M" + d.source.x + "," + d.source.y + "L" + dx + "," + dy;
-      }
-      
-      function transform(d,i) {
-	      d3.select("#hexgon-"+i).attr("transform", "translate(" + d.x + "," + d.y + ")");
-        d3.select("#label-"+i).attr({x: d.x-30, y: d.y-37});
-	      return "translate(" + d.x + "," + d.y + ")";
-      }
+    function func(d) {
+      var dx = d.target.x;
+      var dy = d.target.y;
+      return "M" + d.source.x + "," + d.source.y + "L" + dx + "," + dy;
+    }
 
-      function transform_important(d, i) {
-      	var posY = d.y + 40;
-      	return "translate(" + d.x + "," + posY + ")";	
-      }
+    function transform(d, i) {
+      d3.select("#hexgon-" + i).attr("transform", "translate(" + d.x + "," + d.y + ")");
+      d3.select("#label-" + i).attr({
+        x: d.x - 30,
+        y: d.y - 37
+      });
+      return "translate(" + d.x + "," + d.y + ")";
+    }
 
-       function transform_lables(d, i) {
-      	var posY = d.y - 25;
-      	return "translate(" + d.x + "," + posY + ")";	
-      }
-      
-      function transform_image_x(d,i) {
-      	return d.x - 30;
-      }
+    function transform_important(d, i) {
+      var posY = d.y + 40;
+      return "translate(" + d.x + "," + posY + ")";
+    }
 
-      function transform_image_y(d,i) {
-      	return d.y + 15;
-      }
-      
-      function hexgon(index) {
-	      var _s32 = (Math.sqrt(3)/2);
-	      var A = 50;
-	      var xDiff = 0;
-	      var yDiff = 0;
-	      var pointData = [[A+xDiff, 0+yDiff], [A/2+xDiff, A*_s32+yDiff], [-A/2+xDiff, A*_s32+yDiff], [-A+xDiff, 0+yDiff],
-	      [-A/2+xDiff, -A*_s32+yDiff], [A/2+xDiff, -A*_s32+yDiff]];
-	      
-	      svg.append("g").selectAll("path.area") //draw elements
-	             .data([pointData]).enter().append("path")
-	             .attr("class", "area")
-	             .style("fill", "#ff0000")
-	             .attr("id", "hexgon-"+index)
-	             .attr("stroke", "#fff")
-	             .attr("stroke-width", 3)
-	             .attr("d", d3.svg.line());
-             
-      }
+    function transform_lables(d, i) {
+      var posY = d.y - 25;
+      return "translate(" + d.x + "," + posY + ")";
+    }
 
-      function getNodesData() {
-      	var nodes = {};
-	      links.forEach(function(link) {
-	      link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, important: link.important, label: link.label});
-	      link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, important: link.important, label: link.label});
-	      });
-	      return nodes;
-      }
+    function transform_image_x(d, i) {
+      return d.x - 30;
+    }
 
-      function appendMarker() {
-	      svg.append("defs").selectAll("marker")
-	      .data(["arrow"])
-	      .enter().append("marker")
-	      .attr("id", function(d) { return d; })
-	      .attr("viewBox", "0 -5 10 10")
-	      .attr("refX", 90)
-	      .attr("refY", 0)
-	      .attr("markerWidth", 6)
-	      .attr("markerHeight", 6)
-	      .attr("orient", "auto")
-	      .append("path")
-	      .attr("d", "M0,-5L10,0L0,5");      	
-      }
+    function transform_image_y(d, i) {
+      return d.y + 15;
+    }
 
-      function forceLayout() {
-	      return d3.layout.force()
-						      .size([w, h])
-						      .nodes(d3.values(nodes))
-						      .links(links)
-						      .linkDistance(w/5)
-						      .on("tick", tick)
-									.charge(function(d, i) { return i==0 ? -20000 : -500; })
-									.friction(0.9)
-						      .gravity(0.3)
-						      .start();      	
-      }
+    function hexgon(index) {
+      var _s32 = (Math.sqrt(3) / 2);
+      var A = 50;
+      var xDiff = 0;
+      var yDiff = 0;
+      var pointData = [
+        [A + xDiff, 0 + yDiff],
+        [A / 2 + xDiff, A * _s32 + yDiff],
+        [-A / 2 + xDiff, A * _s32 + yDiff],
+        [-A + xDiff, 0 + yDiff],
+        [-A / 2 + xDiff, -A * _s32 + yDiff],
+        [A / 2 + xDiff, -A * _s32 + yDiff]
+      ];
+      svg.append("g").selectAll("path.area") //draw elements
+        .data([pointData]).enter().append("path").attr("class", "area").style("fill", "#ff0000").attr("id", "hexgon-" + index).attr("stroke", "#fff").attr("stroke-width", 3).attr("d", d3.svg.line());
+    }
 
-      function drawPath() {
-	      return svg.append("g").selectAll("path")
-					      	.data(force.links())
-					      	.enter().append("path")
-					      	.attr("class", "arrow")
-					      	.attr("marker-end", "url(#arrow)");      	
-      }
+    function getNodesData() {
+      var nodes = {};
+      links.forEach(function(link) {
+        link.source = nodes[link.source] || (nodes[link.source] = {
+          name: link.source,
+          important: link.important,
+          label: link.label
+        });
+        link.target = nodes[link.target] || (nodes[link.target] = {
+          name: link.target,
+          important: link.important,
+          label: link.label
+        });
+      });
+      return nodes;
+    }
 
-      function drawCircle() {
-	      return svg.append("g").selectAll("path")
-					      	.data(force.nodes())
-					      	.enter()
-					      	.append("circle")
-					      	.attr("id", function(d,i) {return "circle-"+i;})
-					      	.attr("class", function(d,i) {return "circle-"+i;})
-					      	.attr("r", 50);      	
-      }
+    function appendMarker() {
+      svg.append("defs").selectAll("marker").data(["arrow"]).enter().append("marker").attr("id", function(d) {
+        return d;
+      }).attr("viewBox", "0 -5 10 10").attr("refX", 90).attr("refY", 0).attr("markerWidth", 6).attr("markerHeight", 6).attr("orient", "auto").append("path").attr("d", "M0,-5L10,0L0,5");
+    }
 
-      function drawHexagon() {
-	      for (var i = 0; i < force.nodes().length; i++) { 
-	      	hexgon(i);
-		      var joining_lines = d3.select("#hexgon-"+i).attr("d");
-		      d3.select("#hexgon-"+i).attr("d", joining_lines + " Z")
-          svg.append("g").append('svg:foreignObject')
-            .attr("id", "label-"+i)
-            .attr("width", 100)
-            .attr("height", 100)
-            .html('<span class="label label-success">'+force.nodes()[i].label+'</span>');
-	      }      	
-      }
+    function forceLayout() {
+      return d3.layout.force().size([w, h]).nodes(d3.values(nodes)).links(links).linkDistance(w / 5).on("tick", tick).charge(function(d, i) {
+        return i == 0 ? -20000 : -500;
+      }).friction(0.9).gravity(0.3).start();
+    }
 
-      function addText() {
-	      return svg.append("svg:g").selectAll("text")
-					         .data(force.nodes())
-					         .enter().append("text")
-							     .attr("text-anchor", "middle")
-							     .text(function(d, i) { return "ab de villiars" + i })
-							     .attr("fill", "black");
-							     
-      }
+    function drawPath() {
+      return svg.append("g").selectAll("path").data(force.links()).enter().append("path").attr("class", "arrow").attr("marker-end", "url(#arrow)");
+    }
 
-      function addImage() {
-	      return svg.append("g").selectAll("image")
-						      .data(force.nodes())
-						      .enter().append("image")
-						      .attr("xlink:href", "http://www4.pictures.gi.zimbio.com/Australia+South+African+Nets+Session+Press+8tEdt7zaQcql.jpg")
-						      .attr("width", 25)
-						      .attr("height", 25);
+    function drawCircle() {
+      return svg.append("g").selectAll("path").data(force.nodes()).enter().append("circle").attr("id", function(d, i) {
+        return "circle-" + i;
+      }).attr("class", function(d, i) {
+        return "circle-" + i;
+      }).attr("r", 50);
+    }
+
+    function drawHexagon() {
+      for (var i = 0; i < force.nodes().length; i++) {
+        hexgon(i);
+        var joining_lines = d3.select("#hexgon-" + i).attr("d");
+        d3.select("#hexgon-" + i).attr("d", joining_lines + " Z")
+        svg.append("g").append('svg:foreignObject').attr("id", "label-" + i).attr("width", 100).attr("height", 100).html('<span class="label label-success">' + force.nodes()[i].label + '</span>');
       }
-      
-      function addImportant() {
-	      return svg.append("svg:g").selectAll("text")
-					         .data(force.nodes())
-					         .enter().append("text")
-							     .attr("text-anchor", "middle")
-							     .html(function(d, i) {
-                    if (d.important) {
-                      return "&#9733;"   
-                    }else {
-                      return "";
-                    }
-                    
-                  });
-							 }
-      
-    </script>
-  </body>
+    }
+
+    function addText() {
+      return svg.append("svg:g").selectAll("text").data(force.nodes()).enter().append("text").attr("text-anchor", "middle").text(function(d, i) {
+        return "ab de villiars" + i
+      }).attr("fill", "black");
+    }
+
+    function addImage() {
+      return svg.append("g").selectAll("image").data(force.nodes()).enter().append("image").attr("xlink:href", "http://www4.pictures.gi.zimbio.com/Australia+South+African+Nets+Session+Press+8tEdt7zaQcql.jpg").attr("width", 25).attr("height", 25);
+    }
+
+    function addImportant() {
+      return svg.append("svg:g").selectAll("text").data(force.nodes()).enter().append("text").attr("text-anchor", "middle").html(function(d, i) {
+        if (d.important) {
+          return "&#9733;"
+        } else {
+          return "";
+        }
+      });
+    }
+  </script>
+</body>
+
 </html>
