@@ -37,15 +37,15 @@
       var w = 1000;
       var svg = d3.select("body").append("svg").attr("width" , w).attr("height", h).append("g");
       var links = [
-      {source: "parent", target: "child 1"},
-      {source: "parent", target: "child 2"},
-      {source: "child 3", target: "parent"},
-      {source: "child 4", target: "parent"},
-      {source: "child 5", target: "parent"},
-      {source: "child 6", target: "parent"},
-      {source: "child 7", target: "parent"},
-      {source: "child 8", target: "parent"},
-      {source: "child 9", target: "parent"},
+      {source: "parent", target: "child 1", important: true},
+      {source: "parent", target: "child 2", important: false},
+      {source: "child 3", target: "parent", important: true},
+      {source: "child 4", target: "parent", important: false},
+      {source: "child 5", target: "parent", important: true},
+      {source: "child 6", target: "parent", important: false},
+      {source: "child 7", target: "parent", important: true},
+      {source: "child 8", target: "parent", important: false},
+      {source: "child 9", target: "parent", important: true},
       ];
       
       var nodes = getNodesData();
@@ -114,9 +114,10 @@
       function getNodesData() {
       	var nodes = {};
 	      links.forEach(function(link) {
-	      link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
-	      link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
+	      link.source = nodes[link.source] || (nodes[link.source] = {name: link.source, important: link.important});
+	      link.target = nodes[link.target] || (nodes[link.target] = {name: link.target, important: link.important});
 	      });
+        console.log(nodes)
 	      return nodes;
       }
 
@@ -198,7 +199,14 @@
 					         .data(force.nodes())
 					         .enter().append("text")
 							     .attr("text-anchor", "middle")
-							     .html(function(d, i) { return "&#9733;" });
+							     .html(function(d, i) {
+                    if (d.important) {
+                      return "&#9733;"   
+                    }else {
+                      return "";
+                    }
+                    
+                  });
       }
       
     </script>
