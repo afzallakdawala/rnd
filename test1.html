@@ -157,12 +157,14 @@
         link.source = nodes[link.source] || (nodes[link.source] = {
           name: link.source,
           important: link.important,
-          label: link.label
+          label: link.label,
+          color: link.color
         });
         link.target = nodes[link.target] || (nodes[link.target] = {
           name: link.target,
           important: link.important,
-          label: link.label
+          label: link.label,
+          color: link.color
         });
       });
       return nodes;
@@ -203,7 +205,7 @@
 
     function addText() {
       return svg.append("svg:g").selectAll("text").data(force.nodes()).enter().append("text").attr("text-anchor", "middle").text(function(d, i) {
-        return "ab de villiars" + i
+        return d.name;
       }).attr("fill", "black");
     }
 
