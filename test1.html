@@ -42,6 +42,12 @@
     #label-0 {
       visibility: hidden;
     }
+
+    .display-name {
+      font-size: 10px;
+      text-align: center;
+      color: #fff;
+    }
   </style>
 </head>
 
@@ -87,14 +93,15 @@
     var path = drawPath();
     var circle = drawCircle();
     drawHexagon();
-    var text = addText();
+    //var text = addText();
     var img = addImage();
     var important = addImportant();
 
     function tick() {
       path.attr("d", func);
       circle.attr("transform", transform);
-      text.attr("transform", transform);
+
+      //text.attr("transform", transform);
       img.attr("x", (transform_image_x));
       img.attr("y", transform_image_y);
       important.attr("transform", transform_important);
@@ -113,6 +120,12 @@
         x: d.x - 30,
         y: d.y - 37
       });
+      var pos = {x: d.x - 45,y: d.y - 10}
+      if (i <= 0) {
+        pos = {x: d.x - 50,y: d.y - 35}
+      }
+      d3.select("#text-" + i).attr(pos);
+
       return "translate(" + d.x + "," + d.y + ")";
     }
 
@@ -200,14 +213,17 @@
         var joining_lines = d3.select("#hexgon-" + i).attr("d");
         d3.select("#hexgon-" + i).attr("d", joining_lines + " Z")
         svg.append("g").append('svg:foreignObject').attr("id", "label-" + i).attr("width", 100).attr("height", 100).html('<span class="label label-success">' + force.nodes()[i].label + '</span>');
+        svg.append("g").append('svg:foreignObject').attr("id", "text-" + i).attr("width", 100).attr("height", 100).html('<div class="display-name">' + force.nodes()[i].name + '</span>');
+
       }
     }
 
-    function addText() {
-      return svg.append("svg:g").selectAll("text").data(force.nodes()).enter().append("text").attr("text-anchor", "middle").text(function(d, i) {
-        return d.name;
-      }).attr("fill", "black");
-    }
+    // function addText() {
+    //   return svg.append("g").selectAll("text").data(force.nodes()).enter().append("text").attr("text-anchor", "middle").text(function(d, i) {
+    //     return d.name;
+    //   }).attr("fill", "black")
+    //   ;
+    // }
 
     function addImage() {
       return svg.append("g").selectAll("image").data(force.nodes()).enter().append("image").attr("xlink:href", "http://www4.pictures.gi.zimbio.com/Australia+South+African+Nets+Session+Press+8tEdt7zaQcql.jpg").attr("width", 25).attr("height", 25);
