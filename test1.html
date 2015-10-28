@@ -57,6 +57,7 @@
       var text   = addText();
       var img    = addImage();
       var important   = addImportant();
+      var labels = addLabel();
 
 
       function tick() {
@@ -66,6 +67,7 @@
 	      img.attr("x", (transform_image_x));
 	      img.attr("y", transform_image_y);
 	      important.attr("transform",  transform_important);
+	      labels.attr("transform" , transform_lables);
       }
       
       function func (d) {
@@ -81,6 +83,11 @@
 
       function transform_important(d, i) {
       	var posY = d.y + 40;
+      	return "translate(" + d.x + "," + posY + ")";	
+      }
+
+       function transform_lables(d, i) {
+      	var posY = d.y - 25;
       	return "translate(" + d.x + "," + posY + ")";	
       }
       
@@ -207,7 +214,15 @@
                     }
                     
                   });
-      }
+							 }
+
+	 function addLabel () {
+	 	return svg.append("svg:g").selectAll("text")
+					         .data(force.nodes())
+					         .enter().append("text")
+							     .attr("text-anchor", "middle")
+							     .text(function (d,i) { return "label"});
+	 }
       
     </script>
   </body>
