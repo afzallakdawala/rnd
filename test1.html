@@ -120,7 +120,7 @@
         x: d.x - 30,
         y: d.y - 37
       });
-      var pos = {x: d.x - 45,y: d.y - 10}
+      var pos = {x: d.x - 50,y: d.y - 10}
       if (i <= 0) {
         pos = {x: d.x - 50,y: d.y - 35}
       }
@@ -161,7 +161,7 @@
         [A / 2 + xDiff, -A * _s32 + yDiff]
       ];
       svg.append("g").selectAll("path.area") //draw elements
-        .data([pointData]).enter().append("path").attr("class", "area").style("fill", "#ff0000").attr("id", "hexgon-" + index).attr("stroke", "#fff").attr("stroke-width", 3).attr("d", d3.svg.line());
+        .data([pointData]).enter().append("path").attr("class", "area").style("fill", force.nodes()[index].color).attr("id", "hexgon-" + index).attr("stroke", "#fff").attr("stroke-width", 3).attr("d", d3.svg.line());
     }
 
     function getNodesData() {
