@@ -79,32 +79,38 @@
       target: "Percentage of Strength",
       important: true,
       label: "Diagram",
-      color: "#9996d5"
+      color: "#9996d5",
+      type: "blackbox"
     }, {
       source: "Concentration Terms and Concentration Solutions",
       target: "Stoichiometry",
       important: false,
       label: "Identity",
-      color: "#9996d5"
+      color: "#9996d5",
+      type: "concept"
     }, {
       source: "Concentration Terms and Concentration Solutions",
       target: "Stoichiometry 1",
       important: false,
       label: "Identity",
-      color: "#9996d5"
+      color: "#9996d5",
+      type: "super-concept"
+
     }, {
       source: "Stoichiometry 2",
       target: "Concentration Terms and Concentration Solutions",
       important: false,
       label: "Identity",
-      color: "#9996d5"
+      color: "#9996d5",
+      type: "fundamental-quantity"
     }, 
     {
       source: "Molarity",
       target: "Concentration Terms and Concentration Solutions",
       important: true,
       label: "Defination",
-      color: "#e088c5"
+      color: "#e088c5",
+      type: "blackbox"
     }, 
 
     ];
@@ -158,11 +164,12 @@
     }
 
     function transform_image_x(d, i) {
-      return d.x - 35;
+      return d.x - 42;
     }
 
     function transform_image_y(d, i) {
-      return d.y + 15;
+      if(i == 0){return d.y + 45};
+      return d.y + 28;
     }
 
     function hexgon(index) {
@@ -180,13 +187,15 @@
           name: link.source,
           important: link.important,
           label: link.label,
-          color: link.color
+          color: link.color,
+          type: link.type
         });
         link.target = nodes[link.target] || (nodes[link.target] = {
           name: link.target,
           important: link.important,
           label: link.label,
-          color: link.color
+          color: link.color,
+          type: link.type
         });
       });
       return nodes;
@@ -233,7 +242,20 @@
     }
 
     function addImage() {
-      return svg.append("g").selectAll("image").data(force.nodes()).enter().append("image").attr("xlink:href", "img/content-flow/concept/concept@2x.png").attr("width", 25).attr("height", 25);
+      return svg.append("g").selectAll("image").data(force.nodes()).enter().append("image").attr("xlink:href", function(d,i) {
+        if (d.type == "blackbox"){
+          return "img/blackbox/blackbox@2x.png";
+        }
+        else if (d.type == "concept"){
+          return "img/concept/concepts@2x.png";
+        }
+        else if (d.type == "fundamental-quantity"){
+          return "img/fundamental-quantity/fundamental@2x.png";
+        }
+        else{
+          return "img/super-concept/super@2x.png";
+        }
+      }).attr("width", 28).attr("height", 28);
     }
 
     function addImportant() {
