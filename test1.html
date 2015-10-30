@@ -62,6 +62,7 @@
 </head>
 
 <body>
+  <div id='circle-hexagon'></div>
   <script type="text/javascript">
 
 
@@ -72,7 +73,7 @@
                   .size([w, h])
                   .radius(60);
 
-    var svg = d3.select("body").append("svg").attr("width", w).attr("height", h).append("g");
+    var svg = d3.select("#circle-hexagon").append("svg").attr("width", w).attr("height", h).append("g");
 
     var links = [{
       source: "Concentration Terms and Concentration Solutions",
