@@ -116,6 +116,7 @@
     ];
     var nodes = getNodesData();
     appendMarker();
+    addGradientToCircle();
     var force = forceLayout();
     var path = drawPath();
     var circle = drawCircle();
@@ -217,31 +218,25 @@
       return svg.append("g").selectAll("path").data(force.links()).enter().append("path").attr("class", "arrow").attr("marker-end", "url(#arrow)");
     }
 
-    var gradient = svg.append("svg:defs")
-                      .append("svg:radialGradient")
-                      .attr("id", "gradient")
-                      .attr("cx", "50%")
-                      .attr("cy", "50%")
-                      .attr("r", "50%")
-                      .attr("fx", "50%")
-                      .attr("fy", "50%");
+    function addGradientToCircle() {
+      var gradient = svg.append("svg:defs")
+                        .append("svg:radialGradient")
+                        .attr("id", "gradient")
+                        .attr("cx", "50%")
+                        .attr("cy", "50%")
+                        .attr("r", "50%")
+                        .attr("fx", "50%")
+                        .attr("fy", "50%");
 
-    // Define the gradient colors
+      var gradient_properties = [{offset: "0%", "stop-color": "#86d2ed"}, {offset: "60%", "stop-color": "#53b7dc"}, {offset: "100%", "stop-color": "#28b8ec"}];
+      for (var i = 0; i < 2; i++) {
+        gradient.append("svg:stop")
+                .attr("offset", gradient_properties[i].offset)
+                .attr("stop-color", gradient_properties[i]["stop-color"])
+                .attr("stop-opacity", 1);
+      }
 
-    gradient.append("svg:stop")
-            .attr("offset", "0%")
-            .attr("stop-color", "#86d2ed")
-            .attr("stop-opacity", 1);
-
-    gradient.append("svg:stop")
-            .attr("offset", "60%")
-            .attr("stop-color", "#53b7dc")
-            .attr("stop-opacity", 1);
-
-    gradient.append("svg:stop")
-            .attr("offset", "100%")
-            .attr("stop-color", "#28b8ec")
-            .attr("stop-opacity", 1);
+    }
 
     function drawCircle() {
       return svg.append("g").selectAll("path").data(force.nodes()).enter().append("circle").attr("id", function(d, i) {
